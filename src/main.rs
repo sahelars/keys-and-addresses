@@ -1,8 +1,15 @@
-mod ed25519;
-mod keccak256;
-mod ripemd160;
-mod secp256k1;
-mod wif;
+mod curves {
+    pub mod ed25519;
+    pub mod secp256k1;
+}
+
+mod utils {
+    pub mod keccak256;
+    pub mod ripemd160;
+    pub mod wif;
+}
+
+use crate::curves::{ed25519, secp256k1};
 
 fn main() {
     // Ed25519 operations
