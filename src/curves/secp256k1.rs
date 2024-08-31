@@ -1,23 +1,28 @@
-use crate::keccak256;
-use crate::ripemd160;
-use crate::wif;
-use k256::ecdsa::SigningKey;
+use crate::utils::{keccak256, ripemd160, wif};
+use k256::{elliptic_curve::sec1::ToEncodedPoint, ProjectivePoint, Scalar};
 use rand::rngs::OsRng;
 
 pub fn process() {
-    // Generate a 32-byte private key using a secure random number generator
+    // Initialize a cryptographically secure random number generator
     let mut csprng = OsRng {}; // Generate the secure random number
-    let signing_key = SigningKey::random(&mut csprng); // Generate a new private key
-    let private_key_bytes_32 = signing_key.to_bytes(); // Get the private key as a 32-byte array
+
+    // Generate a private key scalar (seed for public key derivation) using the secure random number
+    let private_key_scalar = Scalar::generate_vartime(&mut csprng); // Securely generate a scalar value
+
+    // Derive the public key from the private key scalar by multiplying with the curve's base point
+    let public_key_point = ProjectivePoint::GENERATOR * private_key_scalar; // Perform scalar multiplication with the base point of the curve to get the public key point
+
+    // Encode the public key point into uncompressed and compressed byte representations
+    let uncompressed_public_key = public_key_point.to_encoded_point(false); // Get the uncompressed public key format (65 bytes)
+    let compressed_public_key = public_key_point.to_encoded_point(true); // Get the compressed public key format (33 bytes)
+    let public_key_bytes_65 = uncompressed_public_key.as_bytes(); // Convert the uncompressed public key to a 65-byte array
+    let public_key_bytes_33 = compressed_public_key.as_bytes(); // Convert the compressed public key to a 33-byte array
+
+    // Convert the scalar to its byte representation
+    let private_key_bytes_32 = private_key_scalar.to_bytes(); // Convert the private key scalar to a 32-byte array
 
     // Create the WIF for the private key
     let private_key_wif = wif::convert_private_key_to_wif(&private_key_bytes_32.into()); // Convert the 32-byte private key to WIF
-
-    // Derive the public key from the private key
-    let uncompressed_public_key = signing_key.verifying_key().to_encoded_point(false); // Get the uncompressed public key format (65 bytes)
-    let compressed_public_key = signing_key.verifying_key().to_encoded_point(true); // Get the compressed public key format (33 bytes)
-    let public_key_bytes_65 = uncompressed_public_key.as_bytes(); // Convert the uncompressed public key to a 65-byte array
-    let public_key_bytes_33 = compressed_public_key.as_bytes(); // Convert the compressed public key to a 33-byte array
 
     // Convert byte arrays to hexadecimal strings
     let private_key_hex = private_key_bytes_32
