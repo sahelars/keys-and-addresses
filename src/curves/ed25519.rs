@@ -6,17 +6,21 @@ use rand::rngs::OsRng;
 use rand::RngCore;
 
 pub fn process() {
-    // Generate a 32-byte private key (seed) using a secure random number generator
+    // Initialize a cryptographically secure random number generator
     let mut csprng = OsRng {}; // Generate the secure random number
+
+    // Generate a 32-byte private key (seed for public key derivation) using the secure random number generator
     let mut private_key_bytes_32 = [0u8; 32]; // Buffer to hold the 32-byte private key
     csprng.fill_bytes(&mut private_key_bytes_32); // Fill the buffer with random bytes
 
-    // Create the field element for cryptographic operations
+    // Create the scalar for cryptographic operations
     let private_key_scalar = Scalar::from_bytes_mod_order(private_key_bytes_32); // Convert the 32-byte private key into a scalar
 
-    // Derive the public key from the private key using the correct base point
-    let public_key_point: EdwardsPoint = &private_key_scalar * &ED25519_BASEPOINT_POINT; // Compute public key point from private key
-    let public_key_bytes_32 = public_key_point.compress().to_bytes(); // Compress the public key point and convert to a 32-byte array
+    // Derive the public key from the private key scalar by multiplying with the curve's base point
+    let public_key_point: EdwardsPoint = &private_key_scalar * &ED25519_BASEPOINT_POINT; // Multiply the base point by the private key scalar to derive the public key point
+
+    // Encode the public key point into compressed byte representation
+    let public_key_bytes_32 = public_key_point.compress().to_bytes(); // Get the compressed public key format (32 bytes)
 
     // Combine the private key and public key into a 64-byte secret key format
     let mut secret_key_bytes_64 = [0u8; 64]; // Buffer to hold the 64-byte the secret key
