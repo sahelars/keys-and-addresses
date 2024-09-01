@@ -4,9 +4,7 @@ mod curves {
 }
 
 mod utils {
-    pub mod keccak256;
-    pub mod ripemd160;
-    pub mod wif;
+    pub mod formats;
 }
 
 use crate::curves::{ed25519, secp256k1};
