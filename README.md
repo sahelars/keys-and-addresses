@@ -10,9 +10,7 @@ Generating blockchain keys and addresses for popular cryptocurrencies like Solan
 
 - `src/curves/ed25519.rs`: Generates and handles Ed25519 keys for Solana.
 - `src/curves/secp256k1.rs`: Generates and handles Secp256k1 keys for Bitcoin and Ethereum.
-- `src/utils/wif.rs`: Converts private key to Bitcoin WIF format.
-- `src/utils/ripemd160.rs`: Computes RIPEMD-160 Bitcoin address.
-- `src/utils/keccak256.rs`: Computes Keccak-256 Ethereum address.
+- `src/utils/formats.rs`: For formatting a key into an Ethereum mixed-case checksum address, a hexadecimal address, a Bitcoin P2PKH address, and a Bitcoin WIF private key.
 
 ## Dependencies
 
@@ -80,10 +78,10 @@ Sensitive data, such as private keys and secret keys, can remain in memory after
 ```rust
 use zeroize::Zeroize;
 
-// Example of zeroizing sensitive data
+// Buffer for sensitive data
 let mut private_key_bytes = [0u8; 32];
 
-// Use the private key for cryptographic operations...
+// Fill private key buffer and use for cryptographic operations...
 
 // Zeroize the private key after use
 private_key_bytes.zeroize();
@@ -107,6 +105,8 @@ Timing side-channels are vulnerabilities where an attacker gains information bas
 **Example of Potential Risk:**
 
 ```rust
+use base58::ToBase58;
+
 // Encoding sensitive data directly can introduce timing side-channel vulnerabilities
 let private_key_base58 = private_key_bytes.to_base58(); // This may be susceptible to timing attacks
 
