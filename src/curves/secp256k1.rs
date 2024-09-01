@@ -42,15 +42,15 @@ pub fn process() {
         public_key_bytes_33.hex()
     );
     println!(
+        "Mixed-Case Checksum Public Address (Hex): {}\n",
+        public_key_bytes_65.mixed_case_checksum()
+    );
+    println!(
         "WIF Private Key (Base58): {}\n",
         private_key_bytes_32.to_vec().wif()
     );
     println!(
         "P2PKH Public Address (Base58): {}\n",
         public_key_bytes_65.p2pkh()
-    );
-    println!(
-        "Mixed-Case Checksum Public Address (Hex): {}\n",
-        public_key_bytes_65.mixed_case_checksum()
     );
 }
