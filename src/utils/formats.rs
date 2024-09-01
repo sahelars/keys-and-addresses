@@ -21,23 +21,45 @@ pub trait WIF {
 
 impl MixedCaseChecksum for &[u8] {
     fn mixed_case_checksum(self) -> String {
+        let public_key = &self[1..]; // Skip the 0x04 prefix
+
         let mut hasher = Keccak::v256(); // Initialize the Keccak-256 hasher
-
-        hasher.update(&self[1..]); // Skip the 0x04 prefix and update the hasher with the 65-byte public key
-
+        hasher.update(public_key); // Hash the 64-byte public key
         let mut hash = [0u8; 32]; // Buffer to hold the 32-byte hash
         hasher.finalize(&mut hash); // Compute the hash and store the result in a 32-byte array
 
-        let mut address = [0u8; 20]; // Buffer to hold the 20-byte address
-        address.copy_from_slice(&hash[12..]); // Fill the buffer by extracting the last 20 bytes of the Keccak-256 hash
+        let address = &hash[12..]; // Extract the last 20 bytes of the Keccak-256 hash to form the address
 
-        format!(
-            "0x{}",
-            address
-                .iter()
-                .map(|b| format!("{:02x}", b))
-                .collect::<String>()
-        ) // Convert the 20-byte address to a hexadecimal string with "0x" prefix
+        let address_hex: String = address.iter().map(|b| format!("{:02x}", b)).collect(); // Convert the address to a lowercase hexadecimal string
+
+        let mut checksum_hasher = Keccak::v256(); // Initialize another Keccak-256 hasher for checksum
+        checksum_hasher.update(address_hex.as_bytes()); // Hash the lowercase hexadecimal string of the address
+        let mut checksum_hash = [0u8; 32]; // Buffer to hold the 32-byte checksum hash
+        checksum_hasher.finalize(&mut checksum_hash); // Compute the checksum hash and store the result in a 32-byte array
+
+        // Apply mixed-case checksum logic directly during address formatting
+        let checksummed_address: String = address_hex
+            .chars()
+            .enumerate()
+            .map(|(i, c)| {
+                // Determine which nibble of the checksum hash to use for character casing
+                let hash_byte = checksum_hash[i / 2];
+                let is_upper = if i % 2 == 0 {
+                    (hash_byte >> 4) >= 8 // Use the high nibble for even indices
+                } else {
+                    (hash_byte & 0x0F) >= 8 // Use the low nibble for odd indices
+                };
+
+                // Convert the character to uppercase if required by the checksum
+                if is_upper {
+                    c.to_ascii_uppercase()
+                } else {
+                    c
+                }
+            })
+            .collect();
+
+        format!("0x{}", checksummed_address) // Prepend the "0x" prefix to the checksummed address
     }
 }
 
