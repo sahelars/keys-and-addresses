@@ -3,7 +3,7 @@
 Generating blockchain keys and addresses for popular cryptocurrencies like Solana, Bitcoin, and Ethereum.
 
 - **Solana**: Generate key pairs using the Ed25519 algorithm.
-- **Bitcoin**: Generate key pairs using the Secp256k1 algorithm, convert private keys to Wallet Import Format (WIF) using SHA-256 and Base58 encoding, and compute addresses using SHA-256 and RIPEMD-160 hashing.
+- **Bitcoin**: Generate key pairs using the Secp256k1 algorithm, compute legacy public addresses using SHA-256 and RIPEMD-160 hashing, and convert private keys to Wallet Import Format (WIF) using SHA-256 and Base58 encoding.
 - **Ethereum**: Compute Ethereum addresses from Secp256k1 public keys using Keccak-256 hashing and apply a mixed-case checksum.
 
 ## Project Structure
