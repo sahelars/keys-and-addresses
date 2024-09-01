@@ -32,10 +32,6 @@ pub fn process() {
         "Compressed Public Key [u8; 33]: {:?}\n",
         public_key_bytes_33
     );
-    println!(
-        "Private Key WIF (Base58): {}\n",
-        private_key_bytes_32.to_vec().wif()
-    );
     println!("Private Key (Hex): {}\n", private_key_bytes_32.hex());
     println!(
         "Uncompressed Public Key (Hex): {}\n",
@@ -44,6 +40,10 @@ pub fn process() {
     println!(
         "Compressed Public Key (Hex): {}\n",
         public_key_bytes_33.hex()
+    );
+    println!(
+        "WIF Private Key (Base58): {}\n",
+        private_key_bytes_32.to_vec().wif()
     );
     println!(
         "P2PKH Public Address (Base58): {}\n",
