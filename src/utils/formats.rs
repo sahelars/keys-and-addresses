@@ -19,7 +19,7 @@ pub trait WIF {
     fn wif(self) -> String;
 }
 
-impl Hex for &[u8] {
+impl<const N: usize> Hex for [u8; N] {
     fn hex(self) -> String {
         self.iter()
             .map(|b| format!("{:02x}", b))
@@ -27,7 +27,7 @@ impl Hex for &[u8] {
     }
 }
 
-impl MixedCaseChecksum for &[u8] {
+impl MixedCaseChecksum for [u8; 65] {
     fn mixed_case_checksum(self) -> String {
         let public_key = &self[1..]; // Skip the 0x04 prefix
 
@@ -71,7 +71,7 @@ impl MixedCaseChecksum for &[u8] {
     }
 }
 
-impl P2PKH for &[u8] {
+impl P2PKH for [u8; 65] {
     fn p2pkh(self) -> String {
         let sha256_hash = Sha256::digest(self); // Perform SHA-256 hashing on the public key
 
@@ -94,7 +94,7 @@ impl P2PKH for &[u8] {
     }
 }
 
-impl WIF for Vec<u8> {
+impl WIF for [u8; 32] {
     fn wif(self) -> String {
         let mut extended_key = Vec::with_capacity(33); // Create a vector with capacity for the prefix and private key
         extended_key.push(0x80); // Prefix for private key (0x80)
