@@ -3,12 +3,12 @@ use ripemd::Ripemd160;
 use sha2::{Digest, Sha256};
 use tiny_keccak::{Hasher, Keccak};
 
-pub trait MixedCaseChecksum {
-    fn mixed_case_checksum(self) -> String;
-}
-
 pub trait Hex {
     fn hex(self) -> String;
+}
+
+pub trait MixedCaseChecksum {
+    fn mixed_case_checksum(self) -> String;
 }
 
 pub trait P2PKH {
@@ -17,6 +17,14 @@ pub trait P2PKH {
 
 pub trait WIF {
     fn wif(self) -> String;
+}
+
+impl Hex for &[u8] {
+    fn hex(self) -> String {
+        self.iter()
+            .map(|b| format!("{:02x}", b))
+            .collect::<String>() // Convert byte array to hex
+    }
 }
 
 impl MixedCaseChecksum for &[u8] {
@@ -60,14 +68,6 @@ impl MixedCaseChecksum for &[u8] {
             .collect();
 
         format!("0x{}", checksummed_address) // Prepend the "0x" prefix to the checksummed address
-    }
-}
-
-impl Hex for &[u8] {
-    fn hex(self) -> String {
-        self.iter()
-            .map(|b| format!("{:02x}", b))
-            .collect::<String>() // Convert byte array to hex
     }
 }
 
