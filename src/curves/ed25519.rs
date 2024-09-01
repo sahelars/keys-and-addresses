@@ -1,11 +1,16 @@
-use base58::ToBase58;
 use curve25519_dalek::constants::ED25519_BASEPOINT_POINT;
 use curve25519_dalek::edwards::EdwardsPoint;
 use curve25519_dalek::scalar::Scalar;
 use rand::rngs::OsRng;
 use rand::RngCore;
 
-pub fn process() {
+pub struct Ed25519 {
+    pub secret_key: [u8; 64],
+    pub private_key: [u8; 32],
+    pub public_key: [u8; 32],
+}
+
+pub fn process() -> Ed25519 {
     // Initialize a cryptographically secure random number generator and create random 64-byte array
     let mut csprng = OsRng {}; // Generate the secure random number
     let mut random_bytes_64 = [0u8; 64]; // Buffer for 64-byte array
@@ -28,15 +33,10 @@ pub fn process() {
     secret_key_bytes_64[..32].copy_from_slice(&private_key_bytes_32); // Copy 32-byte private key (first part)
     secret_key_bytes_64[32..].copy_from_slice(&public_key_bytes_32); // Copy 32-byte public key (second part)
 
-    // Print the data
-    println!("\nEd25519\n");
-    println!("Secret Key [u8; 64]: {:?}\n", secret_key_bytes_64);
-    println!("Private Key [u8; 32]: {:?}\n", private_key_bytes_32);
-    println!("Public Key [u8; 32]: {:?}\n", public_key_bytes_32);
-    println!("Secret Key (Base58): {}\n", secret_key_bytes_64.to_base58());
-    println!(
-        "Private Key (Base58): {}\n",
-        private_key_bytes_32.to_base58()
-    );
-    println!("Public Key (Base58): {}\n", public_key_bytes_32.to_base58());
+    // Return the keys
+    Ed25519 {
+        secret_key: secret_key_bytes_64,
+        private_key: private_key_bytes_32,
+        public_key: public_key_bytes_32,
+    }
 }
