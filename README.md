@@ -48,12 +48,12 @@ cargo run
 - Private Key [u8; 32]: A 32-byte private key.
 - Uncompressed Public Key [u8; 65]: A 65-byte uncompressed public key derived from the private key.
 - Compressed Public Key [u8; 33]: A 33-byte compressed public key derived from the private key.
-- Private Key WIF (Base58): A Base58-encoded representation of the private key following the Wallet Import Format (WIF).
 - Private Key (Hex): A hexadecimal representation of the 32-byte private key.
 - Uncompressed Public Key (Hex): A hexadecimal representation of the 65-byte uncompressed public key.
 - Compressed Public Key (Hex): A hexadecimal representation of the 33-byte compressed public key.
-- RIPEMD-160 Public Address (Base58): A Base58-encoded representation of an address derived from the public key. The process involves performing SHA-256 hashing on the public key, then RIPEMD-160 hashing on the SHA-256 result. A single byte is added to the RIPEMD-160 hash, followed by appending a checksum generated using double SHA-256.
-- Keccak-256 Public Address (Hex): A hexadecimal representation of the address derived from the public key using Keccak-256 hashing.
+- Mixed-Case Checksum Public Address (Hex): A hexadecimal representation of the public address derived from the public key using Keccak-256 hashing and mixed-case checksum logic.
+- WIF Private Key (Base58): A Base58-encoded representation of the private key following the Wallet Import Format (WIF).
+- P2PKH Public Address (Base58): A Base58-encoded representation of the public address derived from the public key. The process involves performing SHA-256 hashing on the public key, then RIPEMD-160 hashing on the SHA-256 result. A single prefix byte is prepended to the RIPEMD-160 hash and a checksum generated from double SHA-256 is appended.
 
 ## Security Considerations
 
