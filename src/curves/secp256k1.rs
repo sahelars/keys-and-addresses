@@ -15,7 +15,7 @@ pub fn process() -> Secp256k1 {
     let private_key_scalar = Scalar::generate_vartime(&mut csprng); // Securely generate a scalar value
 
     // Derive the public key from the private key scalar by multiplying with the curve's base point
-    let public_key_point = ProjectivePoint::GENERATOR * private_key_scalar; // Perform scalar multiplication with the base point of the curve to get the public key point
+    let public_key_point = ProjectivePoint::GENERATOR * private_key_scalar; // Perform scalar multiplication with the base point of the secp256k1 curve to get the public key point
 
     // Encode the public key point into uncompressed and compressed byte representations
     let public_key_bytes_65 = public_key_point

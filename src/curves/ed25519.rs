@@ -20,7 +20,7 @@ pub fn process() -> Ed25519 {
     let private_key_scalar = Scalar::from_bytes_mod_order_wide(&random_bytes_64); // Securely generate a scalar value
 
     // Derive the public key from the private key scalar by multiplying with the curve's base point
-    let public_key_point: EdwardsPoint = &private_key_scalar * &ED25519_BASEPOINT_POINT; // Multiply the base point by the private key scalar to derive the public key point
+    let public_key_point: EdwardsPoint = &private_key_scalar * &ED25519_BASEPOINT_POINT; // Perform scalar multiplication with the base point of the ed25519 curve to get the public key point
 
     // Encode the public key point into compressed byte representation
     let public_key_bytes_32 = public_key_point.compress().to_bytes(); // Get the compressed public key format (32 bytes)
